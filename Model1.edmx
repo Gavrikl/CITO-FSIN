@@ -1,0 +1,449 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище FSINModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Custom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Department" Type="nvarchar(max)" />
+          <Property Name="Product" Type="nvarchar(max)" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="Date" Type="date" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "FSIN.dbo.Expenses" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="Expenses">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Money" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Money" Type="money" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Medical_checkup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdPrisoner" Type="int" Nullable="false" />
+          <Property Name="IdEmployee" Type="int" Nullable="false" />
+          <Property Name="Prs" Type="nvarchar(max)" />
+          <Property Name="Preventive_medical_examination" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Prisoners">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Surname" Type="nvarchar(max)" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Middlename" Type="nvarchar(max)" />
+          <Property Name="Article" Type="nvarchar(max)" />
+          <Property Name="Photo" Type="image" />
+        </EntityType>
+        <EntityType Name="Report on procurement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Idorder" Type="int" Nullable="false" />
+          <Property Name="Price" Type="int" />
+          <Property Name="Date" Type="date" />
+        </EntityType>
+        <EntityType Name="Staff_headquarters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Surname" Type="nvarchar(max)" />
+          <Property Name="Middlename" Type="nvarchar(max)" />
+          <Property Name="Department2" Type="nvarchar(max)" />
+          <Property Name="Position" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="StaffHolidays">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdStaff" Type="int" Nullable="false" />
+          <Property Name="DateFrom" Type="date" Nullable="false" />
+          <Property Name="DateTo" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Login" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Medical_checkup_Prisoners">
+          <End Role="Prisoners" Type="Self.Prisoners" Multiplicity="1" />
+          <End Role="Medical_checkup" Type="Self.Medical_checkup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Prisoners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Medical_checkup">
+              <PropertyRef Name="IdPrisoner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Medical_checkup_Staff_headquarters">
+          <End Role="Staff_headquarters" Type="Self.Staff_headquarters" Multiplicity="1" />
+          <End Role="Medical_checkup" Type="Self.Medical_checkup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Staff_headquarters">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Medical_checkup">
+              <PropertyRef Name="IdEmployee" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Report on procurement_Custom">
+          <End Role="Custom" Type="Self.Custom" Multiplicity="1" />
+          <End Role="Report on procurement" Type="Self.Report on procurement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Custom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Report on procurement">
+              <PropertyRef Name="Idorder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StaffHolidays_Staff_headquarters">
+          <End Role="Staff_headquarters" Type="Self.Staff_headquarters" Multiplicity="1" />
+          <End Role="StaffHolidays" Type="Self.StaffHolidays" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Staff_headquarters">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StaffHolidays">
+              <PropertyRef Name="IdStaff" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище FSINModelContainer">
+          <EntitySet Name="Custom" EntityType="Self.Custom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Medical_checkup" EntityType="Self.Medical_checkup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Prisoners" EntityType="Self.Prisoners" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Report on procurement" EntityType="Self.Report on procurement" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Staff_headquarters" EntityType="Self.Staff_headquarters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StaffHolidays" EntityType="Self.StaffHolidays" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Expenses" EntityType="Self.Expenses" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Expenses].[ID] AS [ID], 
+    [Expenses].[Money] AS [Money], 
+    [Expenses].[Date] AS [Date]
+    FROM [dbo].[Expenses] AS [Expenses]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Medical_checkup_Prisoners" Association="Self.FK_Medical_checkup_Prisoners">
+            <End Role="Prisoners" EntitySet="Prisoners" />
+            <End Role="Medical_checkup" EntitySet="Medical_checkup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Medical_checkup_Staff_headquarters" Association="Self.FK_Medical_checkup_Staff_headquarters">
+            <End Role="Staff_headquarters" EntitySet="Staff_headquarters" />
+            <End Role="Medical_checkup" EntitySet="Medical_checkup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Report on procurement_Custom" Association="Self.FK_Report on procurement_Custom">
+            <End Role="Custom" EntitySet="Custom" />
+            <End Role="Report on procurement" EntitySet="Report on procurement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StaffHolidays_Staff_headquarters" Association="Self.FK_StaffHolidays_Staff_headquarters">
+            <End Role="Staff_headquarters" EntitySet="Staff_headquarters" />
+            <End Role="StaffHolidays" EntitySet="StaffHolidays" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FSINModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Custom">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Department" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Product" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Report_on_procurement" Relationship="Self.FK_Report_on_procurement_Custom" FromRole="Custom" ToRole="Report_on_procurement" />
+        </EntityType>
+        <EntityType Name="Medical_checkup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdPrisoner" Type="Int32" Nullable="false" />
+          <Property Name="IdEmployee" Type="Int32" Nullable="false" />
+          <Property Name="Prs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Preventive_medical_examination" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Prisoners" Relationship="Self.FK_Medical_checkup_Prisoners" FromRole="Medical_checkup" ToRole="Prisoners" />
+          <NavigationProperty Name="Staff_headquarters" Relationship="Self.FK_Medical_checkup_Staff_headquarters" FromRole="Medical_checkup" ToRole="Staff_headquarters" />
+        </EntityType>
+        <EntityType Name="Prisoners">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Surname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Middlename" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Article" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="Medical_checkup" Relationship="Self.FK_Medical_checkup_Prisoners" FromRole="Prisoners" ToRole="Medical_checkup" />
+        </EntityType>
+        <EntityType Name="Report_on_procurement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Idorder" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Custom" Relationship="Self.FK_Report_on_procurement_Custom" FromRole="Report_on_procurement" ToRole="Custom" />
+        </EntityType>
+        <EntityType Name="Staff_headquarters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Middlename" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Department2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Position" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Medical_checkup" Relationship="Self.FK_Medical_checkup_Staff_headquarters" FromRole="Staff_headquarters" ToRole="Medical_checkup" />
+          <NavigationProperty Name="StaffHolidays" Relationship="Self.FK_StaffHolidays_Staff_headquarters" FromRole="Staff_headquarters" ToRole="StaffHolidays" />
+        </EntityType>
+        <EntityType Name="StaffHolidays">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdStaff" Type="Int32" Nullable="false" />
+          <Property Name="DateFrom" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DateTo" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="Staff_headquarters" Relationship="Self.FK_StaffHolidays_Staff_headquarters" FromRole="StaffHolidays" ToRole="Staff_headquarters" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Expenses">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Money" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Money" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <Association Name="FK_Report_on_procurement_Custom">
+          <End Role="Custom" Type="Self.Custom" Multiplicity="1" />
+          <End Role="Report_on_procurement" Type="Self.Report_on_procurement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Custom">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Report_on_procurement">
+              <PropertyRef Name="Idorder" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Medical_checkup_Prisoners">
+          <End Role="Prisoners" Type="Self.Prisoners" Multiplicity="1" />
+          <End Role="Medical_checkup" Type="Self.Medical_checkup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Prisoners">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Medical_checkup">
+              <PropertyRef Name="IdPrisoner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Medical_checkup_Staff_headquarters">
+          <End Role="Staff_headquarters" Type="Self.Staff_headquarters" Multiplicity="1" />
+          <End Role="Medical_checkup" Type="Self.Medical_checkup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Staff_headquarters">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Medical_checkup">
+              <PropertyRef Name="IdEmployee" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StaffHolidays_Staff_headquarters">
+          <End Role="Staff_headquarters" Type="Self.Staff_headquarters" Multiplicity="1" />
+          <End Role="StaffHolidays" Type="Self.StaffHolidays" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Staff_headquarters">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StaffHolidays">
+              <PropertyRef Name="IdStaff" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FSINEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Custom" EntityType="Self.Custom" />
+          <EntitySet Name="Medical_checkup" EntityType="Self.Medical_checkup" />
+          <EntitySet Name="Prisoners" EntityType="Self.Prisoners" />
+          <EntitySet Name="Report_on_procurement" EntityType="Self.Report_on_procurement" />
+          <EntitySet Name="Staff_headquarters" EntityType="Self.Staff_headquarters" />
+          <EntitySet Name="StaffHolidays" EntityType="Self.StaffHolidays" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <EntitySet Name="Expenses" EntityType="Self.Expenses" />
+          <AssociationSet Name="FK_Report_on_procurement_Custom" Association="Self.FK_Report_on_procurement_Custom">
+            <End Role="Custom" EntitySet="Custom" />
+            <End Role="Report_on_procurement" EntitySet="Report_on_procurement" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Medical_checkup_Prisoners" Association="Self.FK_Medical_checkup_Prisoners">
+            <End Role="Prisoners" EntitySet="Prisoners" />
+            <End Role="Medical_checkup" EntitySet="Medical_checkup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Medical_checkup_Staff_headquarters" Association="Self.FK_Medical_checkup_Staff_headquarters">
+            <End Role="Staff_headquarters" EntitySet="Staff_headquarters" />
+            <End Role="Medical_checkup" EntitySet="Medical_checkup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StaffHolidays_Staff_headquarters" Association="Self.FK_StaffHolidays_Staff_headquarters">
+            <End Role="Staff_headquarters" EntitySet="Staff_headquarters" />
+            <End Role="StaffHolidays" EntitySet="StaffHolidays" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище FSINModelContainer" CdmEntityContainer="FSINEntities1">
+          <EntitySetMapping Name="Custom">
+            <EntityTypeMapping TypeName="FSINModel.Custom">
+              <MappingFragment StoreEntitySet="Custom">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Medical_checkup">
+            <EntityTypeMapping TypeName="FSINModel.Medical_checkup">
+              <MappingFragment StoreEntitySet="Medical_checkup">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdPrisoner" ColumnName="IdPrisoner" />
+                <ScalarProperty Name="IdEmployee" ColumnName="IdEmployee" />
+                <ScalarProperty Name="Prs" ColumnName="Prs" />
+                <ScalarProperty Name="Preventive_medical_examination" ColumnName="Preventive_medical_examination" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Prisoners">
+            <EntityTypeMapping TypeName="FSINModel.Prisoners">
+              <MappingFragment StoreEntitySet="Prisoners">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Middlename" ColumnName="Middlename" />
+                <ScalarProperty Name="Article" ColumnName="Article" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Report_on_procurement">
+            <EntityTypeMapping TypeName="FSINModel.Report_on_procurement">
+              <MappingFragment StoreEntitySet="Report on procurement">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Idorder" ColumnName="Idorder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Staff_headquarters">
+            <EntityTypeMapping TypeName="FSINModel.Staff_headquarters">
+              <MappingFragment StoreEntitySet="Staff_headquarters">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Middlename" ColumnName="Middlename" />
+                <ScalarProperty Name="Department2" ColumnName="Department2" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StaffHolidays">
+            <EntityTypeMapping TypeName="FSINModel.StaffHolidays">
+              <MappingFragment StoreEntitySet="StaffHolidays">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="IdStaff" ColumnName="IdStaff" />
+                <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+                <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="FSINModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Expenses">
+            <EntityTypeMapping TypeName="FSINModel.Expenses">
+              <MappingFragment StoreEntitySet="Expenses">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Money" ColumnName="Money" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
